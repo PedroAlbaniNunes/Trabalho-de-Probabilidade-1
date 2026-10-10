@@ -14,4 +14,8 @@ Neste trabalho, a turma construirá uma **máquina didática com regras pública
 
 ### Iniciando Projeto
 - npm install
-- npm run test
+- npm run build
+# Para Rodar a CLI
+- npm run cli
+# Para Rodar interface gráfica
+- npm run interface

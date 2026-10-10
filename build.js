@@ -22,7 +22,10 @@ copyRecursiveSync('config', 'dist/config');
 
 // 3. Executa o esbuild
 esbuild.build({
-    entryPoints: ['./tsc-out/index.js'],
+    entryPoints: {
+        index: './tsc-out/index.js',
+        cli: './tsc-out/cli.js'
+    },
     bundle: true,
     sourcemap: process.env.NODE_ENV === 'development',
     platform: 'node',
@@ -30,7 +33,6 @@ esbuild.build({
     outdir: 'dist',
     external: ['sharp'],
 }).then(() => {
-    // 4. Apaga a pasta temporária tsc-out após o sucesso
     if (fs.existsSync('tsc-out')) {
         fs.rmSync('tsc-out', { recursive: true, force: true });
     }

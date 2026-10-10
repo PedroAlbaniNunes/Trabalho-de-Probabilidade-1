@@ -1,0 +1,40 @@
+{
+  "name": "trabalho-de-probabilidade-1",
+  "version": "1.0.0",
+  "description": "As apostas digitais aproximaram jogos de azar, publicidade, meios de pagamento e uso cotidiano do celular. Entre esses produtos estão as máquinas de rolos, popularizadas no Brasil pelo chamado “jogo do tigrinho”. Seus símbolos e animações podem tornar uma rodada fácil de acompanhar, mas não explicam, por si, a probabilidade de receber um prêmio nem o resultado financeiro de repetir o jogo.",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run clean && node build.js",
+    "clean": "rimraf dist",
+    "tsc": "ttsc -P tsconfig.build.json",
+    "test": "npm run build && npm run dev",
+    "dev": "tsx watch src/index.ts",
+    
+    "start": "node dist/index.js"
+  },
+  "engines": {
+    "node": "~26.x"
+  },
+
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PedroAlbaniNunes/Trabalho-de-Probabilidade-1.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/PedroAlbaniNunes/Trabalho-de-Probabilidade-1/issues"
+  },
+  "dependencies": {
+    "ttsc": "0.31.1"
+  },
+  "homepage": "https://github.com/PedroAlbaniNunes/Trabalho-de-Probabilidade-1#readme",
+  "devDependencies": {
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "esbuild": "0.28.2",
+    "rimraf": "6.1.3"
+  }
+}

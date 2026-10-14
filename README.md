@@ -9,9 +9,9 @@ Projeto acadêmico desenvolvido para a disciplina de **Probabilidade e Estatíst
 
 ## 👥 Integrantes da Equipe
 
-- **Nome do Integrante 1:** [Seu Nome Completo] - [Matrícula]
-- **Nome do Integrante 2:** [Nome Completo] - [Matrícula]
-- **Nome do Integrante 3:** [Nome Completo] - [Matrícula]
+- **Integrante 1:** Gustavo Saraiva Mariano
+- **Integrante 2:** Lucas Mariani Gomes
+- **Integrante 3:** Pedro Henrique Albani Nunes
 
 ---
 
@@ -66,7 +66,7 @@ tigrinhoManipulado/
 │       ├── exportador.py                # Exportação de resultados tabulares em CSV
 │       └── graficos.py                  # Geração de gráficos para o relatório acadêmico
 │
-├── tests/                               # Testes e validações automatizadas (pontos extras)
+├── tests/                               # Testes e validações automatizadas 
 │   ├── __init__.py
 │   └── test_validacoes.py               # Verificações de regras, lucros, sementes e casos-limite
 │
@@ -130,6 +130,8 @@ pytest tests/
 
 Em estrito cumprimento às instruções do trabalho acadêmico (Seções 4 e 11 do edital):
 
-- **Uso de IA:** [Declarar aqui se utilizou IA no desenvolvimento, por exemplo: Google Antigravity / Gemini / ChatGPT].
+- **Uso de IA:** Sim, foi utilizado o Antigravity.
+
 - **Escopo do Apoio:** A IA foi utilizada no suporte ao planejamento da arquitetura de pastas, sugestão de assinaturas de funções e organização do esqueleto do projeto.
+
 - **Conferência e Autoria Humana:** Toda a lógica matemática, implementação das simulações, conferência das sementes, análise de dados e redação das discussões críticas foram integralmente realizadas e revisadas pelos integrantes do grupo.

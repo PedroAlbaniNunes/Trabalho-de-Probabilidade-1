@@ -1,0 +1,8 @@
+# Dependências para cálculos estatísticos, manipulação de dados e visualização
+numpy>=1.24.0
+matplotlib>=3.7.0
+pandas>=2.0.0
+
+# Opcionais úteis para testes e formatação de tabelas no terminal
+tabulate>=0.9.0
+pytest>=7.0.0

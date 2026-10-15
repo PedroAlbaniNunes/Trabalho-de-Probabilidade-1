@@ -1,0 +1,8 @@
+Desfecho,Lucro_X,Prob_Teorica,Prob_Teorica_Pct,Contagem,Freq_Relativa_Pct
+A-A-A,+4,0.0080,0.80%,77,0.77%
+B-B-B,+9,0.0080,0.80%,88,0.88%
+C-C-C,+14,0.0080,0.80%,78,0.78%
+D-D-D,+24,0.0080,0.80%,88,0.88%
+E-E-E,+49,0.0080,0.80%,81,0.81%
+Qualquer outra tripla,-1,0.9600,96.00%,9588,95.88%
+TOTAL,-,1.0000,100.00%,10000,100.00%

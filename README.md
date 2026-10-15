@@ -107,9 +107,44 @@ tigrinhoManipulado/
 
 ## Instruções de Instalação e Execução
 
-### 1. Clonagem e Preparação do Ambiente
+### 1. Clonagem do Repositório (Passo a Passo para Iniciantes)
 
-Recomenda-se a criação de um ambiente virtual isolado para a execução do simulador:
+Caso você nunca tenha utilizado o Git ou deseje baixar uma cópia completa deste projeto em sua máquina local, siga os passos abaixo:
+
+1. **Verificar ou Instalar o Git:**  
+   Abra o terminal do seu sistema operacional (PowerShell ou Prompt de Comando no Windows; Terminal no Linux/macOS) e verifique se o Git está instalado digitando:
+   ```bash
+   git --version
+   ```
+   Caso o comando não seja reconhecido, faça o download gratuito e a instalação pelo site oficial: [https://git-scm.com](https://git-scm.com).
+
+2. **Escolher a Pasta de Destino:**  
+   No terminal, navegue até a pasta onde deseja salvar o projeto (por exemplo, na Área de Trabalho ou pasta de documentos):
+   ```bash
+   cd ~/Desktop
+   ```
+   *(No Windows PowerShell: `cd C:\Users\SeuUsuario\Desktop`)*
+
+3. **Clonar o Repositório:**  
+   Execute o comando de clonagem informando o link oficial do projeto no GitHub:
+   ```bash
+   git clone https://github.com/PedroAlbaniNunes/Trabalho-de-Probabilidade-1.git
+   ```
+   Esse comando criará automaticamente uma pasta chamada `Trabalho-de-Probabilidade-1` contendo todos os arquivos, códigos e dados do simulador.
+
+4. **Acessar a Pasta do Projeto:**  
+   Entre na pasta recém-criada antes de prosseguir com os comandos seguintes:
+   ```bash
+   cd Trabalho-de-Probabilidade-1
+   ```
+
+*(Nota alternativa: caso prefira não utilizar a linha de comando para o download, você também pode acessar a página do repositório no GitHub, clicar no botão verde **Code** e selecionar **Download ZIP**, descompactando o conteúdo em uma pasta de sua preferência).*
+
+---
+
+### 2. Criação e Ativação do Ambiente Virtual
+
+Recomenda-se a criação de um ambiente virtual isolado para não misturar as dependências deste trabalho com outros pacotes do seu computador:
 
 No terminal (Linux / macOS):
 ```bash
@@ -123,14 +158,18 @@ python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
 
-### 2. Instalação das Dependências
+---
 
-Com o ambiente virtual ativado, instale os pacotes requeridos:
+### 3. Instalação das Dependências
+
+Com o ambiente virtual ativado, instale os pacotes requeridos listados no arquivo `requirements.txt`:
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Execução do Simulador
+---
+
+### 4. Execução do Simulador
 
 O ponto de entrada principal do projeto é a interface em linha de comando interativa:
 ```bash
@@ -143,7 +182,9 @@ O menu disponibiliza as seguintes opções:
 - **Opção 7:** Executar a bateria completa de experimentos em lote, gerando simultaneamente todos os relatórios em `.csv` e gráficos em `.png`.
 - **Opção 0:** Encerrar o programa.
 
-### 4. Execução da Suíte de Testes Automatizados
+---
+
+### 5. Execução da Suíte de Testes Automatizados
 
 Para verificar a conformidade matemática e a integridade de regras do sistema:
 ```bash

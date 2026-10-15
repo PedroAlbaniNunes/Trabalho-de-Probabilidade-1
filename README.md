@@ -229,3 +229,10 @@ Em estrito cumprimento às diretrizes éticas e acadêmicas estipuladas pelo edi
 - **Ferramenta Utilizada:** Google Antigravity / Gemini.
 - **Escopo do Suporte:** Auxílio na estruturação modular do projeto, formatação de docstrings e comentários, organização dos scripts de teste automatizado e suporte à redação técnica da documentação.
 - **Autoria e Conferência Humana:** Todas as implementações algorítmicas, validações de cálculo estocástico, auditoria de sementes, análise de dados e redação das discussões críticas interdisciplinares foram integralmente concebidas, conferidas e aprovadas pela equipe de discentes.
+
+---
+
+## Licença
+
+Este projeto é disponibilizado sob os termos da licença **MIT**. Consulte o arquivo [LICENSE](LICENSE) para obter detalhes completos sobre termos de uso, cópia e distribuição.
+

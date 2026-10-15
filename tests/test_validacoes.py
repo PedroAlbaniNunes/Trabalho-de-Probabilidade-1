@@ -7,14 +7,20 @@ Verificações implementadas:
 3. Reprodutibilidade estrita da semente pseudoaleatória (mesma semente gerando os mesmos resultados).
 4. Integridade dos totais (soma de 10.000 contagens no E1, marcos 3x3 no E2 e 100 jogadores no E3).
 5. Regras de parada e consistência do saldo limitado (E3).
+6. Independência estocástica e integridade dos 9.999 pares consecutivos (E4).
+7. Linearidade e comparação pareada das tabelas de pagamento Base vs +10% (E5).
+8. Caso-limite: verificação de saldo insuficiente.
 """
 
+import math
 import random
 from src.maquina.pagamentos import (
     f_ehTriplaPremiada,
     f_calcularPremioBruto,
     f_calcularLucroLiquido,
+    f_calcularEsperancaTeorica,
     TABELA_BASE,
+    TABELA_BONUS_10,
 )
 from src.maquina.rolos import (
     f_sortearTabuleiro3x3,
@@ -27,6 +33,13 @@ from src.experimentos.exp2_lei_grandes_numeros import (
 )
 from src.experimentos.exp3_saldo_limitado import (
     f_executarExperimento3,
+)
+from src.experimentos.exp4_prob_condicional import (
+    f_analisarParesConsecutivos,
+    f_executarExperimento4,
+)
+from src.experimentos.exp5_premios_maiores import (
+    f_executarExperimento5,
 )
 
 
@@ -89,18 +102,13 @@ def test_f_experimento3_saldo_limitado_e_ruina() -> None:
     """Verifica as regras de parada, integridade de categorias e esgotamento do Experimento 3."""
     res_e3 = f_executarExperimento3(semente=42, numJogadores=100)
 
-    # 1. Total de participantes deve ser exatamente 100
     assert res_e3["num_jogadores"] == 100
     assert len(res_e3["participantes"]) == 100
 
-    # 2. As categorias ganho, empate e perda devem somar rigorosamente 100%
     soma_proporcoes = res_e3["prop_ganho_pct"] + res_e3["prop_empate_pct"] + res_e3["prop_perda_pct"]
     assert round(soma_proporcoes, 4) == 100.0
-
-    # 3. Taxa de esgotamento deve ser menor ou igual à taxa de perda (pois é subconjunto)
     assert res_e3["taxa_esgotamento_pct"] <= res_e3["prop_perda_pct"]
 
-    # 4. Nenhum jogador pode ter jogado mais de 500 rodadas
     for p in res_e3["participantes"]:
         assert p["rodadas_jogadas"] <= 500
         if p["esgotou"]:
@@ -108,6 +116,41 @@ def test_f_experimento3_saldo_limitado_e_ruina() -> None:
         else:
             assert p["saldo_final"] >= 1.0
             assert p["rodadas_jogadas"] == 500
+
+
+def test_f_experimento4_probabilidade_condicional() -> None:
+    """Verifica a integridade dos 9.999 pares e independência estocástica no Experimento 4."""
+    res_e4 = f_executarExperimento4()
+
+    assert res_e4["n_pares"] == 9_999
+    soma_pares = res_e4["total_apos_premio"] + res_e4["total_apos_perda"]
+    assert soma_pares == 9_999
+
+    assert 2.0 <= res_e4["prop_apos_premio_pct"] <= 7.0
+    assert 3.0 <= res_e4["prop_apos_perda_pct"] <= 5.0
+
+    caso_sem_premios = [0.0] * 20
+    resultado_limite = f_analisarParesConsecutivos(caso_sem_premios)
+    assert resultado_limite["total_apos_premio"] == 0
+    assert resultado_limite["prop_apos_premio_pct"] is None
+
+
+def test_f_experimento5_premios_maiores() -> None:
+    """Verifica a linearidade e comparação pareada das tabelas Base e +10% no Experimento 5."""
+    res_e5 = f_executarExperimento5()
+
+    # 1. Conferência das referências teóricas estipuladas no edital
+    assert math.isclose(res_e5["rtp_teo_bonus"], 92.4, abs_tol=1e-4)
+    assert math.isclose(res_e5["lucro_medio_teo_bonus"], -0.076, abs_tol=1e-4)
+    assert math.isclose(res_e5["premio_medio_teo_bonus"], 0.924, abs_tol=1e-4)
+
+    # 2. A probabilidade de prêmio deve ser rigorosamente 4.0% para ambas as tabelas
+    assert res_e5["prob_premio_teo"] == 4.0
+    assert res_e5["freq_premio_obs"] == 4.12
+
+    # 3. Linearidade exata observada na comparação pareada (+10% nos prêmios e no RTP)
+    assert math.isclose(res_e5["rtp_obs_bonus"], 1.10 * res_e5["rtp_obs_base"], rel_tol=1e-4)
+    assert math.isclose(res_e5["premio_medio_obs_bonus"], 1.10 * res_e5["premio_medio_obs_base"], rel_tol=1e-4)
 
 
 def test_f_casoLimiteSaldoInsuficiente() -> None:

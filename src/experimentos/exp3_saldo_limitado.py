@@ -4,17 +4,7 @@ Conceitos em ação (Seção 7 e 8 do edital):
 - Distribuição empírica de resultados com parada prematura (tempo de parada e ruína do jogador).
 - Comparação entre média e mediana em distribuições de lucros com assimetria positiva.
 - Horizonte de observação e variabilidade entre sessões de apostadores.
-- Desmistificação de relatos isolados de sucesso (viés do sobrevivente).
-
-Procedimento estipulado pelo edital:
-- Simular 100 participantes virtuais, cada um com saldo inicial de 100 créditos e aposta de 1 crédito.
-- Regra de parada: sessão termina ao atingir 500 rodadas OU quando o saldo for inferior a 1 (esgotamento).
-- Atualização do saldo: B_{t+1} = B_t + X_{t+1} (sem empréstimo ou reposição).
-- A semente 42 deve ser inicializada UMA ÚNICA VEZ no início e mantida continuamente entre os participantes.
-- Registrar saldo final, número de rodadas e se houve esgotamento.
-- Apresentar proporções: ganho (B_f > 100), empate (B_f = 100), perda (B_f < 100), somando rigorosamente 100%.
-- Apresentar taxa de esgotamento (subconjunto das perdas), média e mediana dos saldos finais.
-- Gerar gráfico das trajetórias dos cinco primeiros participantes (mantendo o saldo constante após a parada até a rodada 500).
+- Desmistificação de relatos isolados de sucesso (viés do sobrevivente nas redes sociais).
 """
 
 from typing import Dict, Any, List
@@ -45,7 +35,6 @@ from src.analise.metricas import (
 )
 from src.analise.exportador import (
     f_exportarParaCsv,
-    f_gerarTabelaFormatada,
 )
 from src.analise.graficos import (
     f_plotarTrajetoriasSaldosExp3,
@@ -55,65 +44,69 @@ from src.analise.graficos import (
 def f_simularSessaoJogador(gerador: Any, saldoInicial: float = SALDO_INICIAL_EXP3, maxRodadas: int = MAX_RODADAS_EXP3) -> Dict[str, Any]:
     r"""Simula a sessão individual de um apostador até o tempo de parada (500 rodadas ou ruína B < 1).
 
-    Argumentos:
-        gerador: Instância do gerador pseudoaleatório compartilhada entre participantes.
+    Args:
+        gerador (Any): Instância do gerador pseudoaleatório compartilhada entre participantes.
         saldoInicial (float): Saldo de partida em créditos (padrão do edital: 100.0).
         maxRodadas (int): Limite máximo de rodadas na sessão (padrão do edital: 500).
 
-    Retorna:
-        Dict[str, Any]: Dicionário contendo histórico de saldos, saldo final, rodadas jogadas e esgotamento.
+    Returns:
+        Dict[str, Any]: Dicionário contendo histórico de saldos, saldo final, rodadas jogadas e indicador de ruína.
     """
-    saldo = float(saldoInicial)
-    trajetoria: List[float] = [saldo]
-    rodadas_jogadas = 0
+    saldo = float(saldoInicial)  # O camarada entra no cassino com 100 contos no bolso
+    trajetoria: List[float] = [saldo]  # Histórico da montanha-russa do bolso do cidadão
+    rodadas_jogadas = 0  # Contador de giros
 
+    # O cara só joga se ainda tiver dinheiro (>= 1) e não tiver estourado o tempo limite (500 giros)
     while rodadas_jogadas < maxRodadas and saldo >= 1.0:
-        tabuleiro = f_sortearTabuleiro3x3(gerador)
-        linha_central = f_extrairLinhaCentral(tabuleiro)
+        tabuleiro = f_sortearTabuleiro3x3(gerador)  # Bota a máquina pra rodar
+        linha_central = f_extrairLinhaCentral(tabuleiro)  # Olha o que caiu na linha do meio
 
-        premio_P = f_calcularPremioBruto(linha_central, TABELA_BASE)
-        lucro_X = f_calcularLucroLiquido(premio_P, CUSTO_APOSTA)
+        premio_P = f_calcularPremioBruto(linha_central, TABELA_BASE)  # Vê se bateu alguma trinca
+        lucro_X = f_calcularLucroLiquido(premio_P, CUSTO_APOSTA)  # Desconta 1 crédito de entrada
 
-        saldo += lucro_X
-        rodadas_jogadas += 1
-        trajetoria.append(saldo)
+        saldo += lucro_X  # Atualiza o caixa: ou subiu com um prêmio ou tomou -1 no lombo
+        rodadas_jogadas += 1  # Mais uma rodada pra conta do caboclo
+        trajetoria.append(saldo)  # Registra o novo saldo na fita
 
-    esgotou = (saldo < 1.0)
+    esgotou = (saldo < 1.0)  # Quebrou a banca? Se sobrou menos de 1 crédito, já era: tá liso!
 
     return {
-        "saldo_final": saldo,
-        "rodadas_jogadas": rodadas_jogadas,
-        "esgotou": esgotou,
-        "trajetoria_saldos": trajetoria,
+        "saldo_final": saldo,              # Com quanto saiu (muitas vezes zerado)
+        "rodadas_jogadas": rodadas_jogadas,  # Quanto tempo conseguiu sobreviver na máquina
+        "esgotou": esgotou,                # Flag de ruína: bateu na lona?
+        "trajetoria_saldos": trajetoria,   # O filme completo da sessão
     }
 
 
 def f_executarExperimento3(semente: int = SEMENTE_EXP3, numJogadores: int = NUMERO_JOGADORES_EXP3) -> Dict[str, Any]:
     r"""Executa a simulação completa do Experimento 3 para os 100 participantes virtuais.
 
-    Argumentos:
-        semente (int): Semente do gerador pseudoaleatório (padrão: 42).
+    Coloca 100 jogadores em fila na mesma máquina com a semente 42 contínua,
+    medindo quem sai no lucro, quem empata e quem quebra a cara.
+
+    Args:
+        semente (int): Semente do gerador pseudoaleatório (padrão do edital: 42).
         numJogadores (int): Total de participantes virtuais (padrão: 100).
 
-    Retorna:
+    Returns:
         Dict[str, Any]: Dicionário contendo todas as métricas calculadas e trajetórias.
     """
     # 1. Inicializar o gerador pseudoaleatório uma única vez e continuar entre participantes
-    gerador = random.Random(semente)
+    gerador = random.Random(semente)  # Semente 42 ligada: a mesma máquina atendendo os 100 jogadores em fila!
 
     participantes: List[Dict[str, Any]] = []
 
     # 2. Simular as sessões sequenciais dos 100 jogadores virtuais
-    for id_jogador in range(1, numJogadores + 1):
-        sessao = f_simularSessaoJogador(gerador, SALDO_INICIAL_EXP3, MAX_RODADAS_EXP3)
-        saldo_f = sessao["saldo_final"]
+    for id_jogador in range(1, numJogadores + 1):  # Próximo da fila, por favor!
+        sessao = f_simularSessaoJogador(gerador, SALDO_INICIAL_EXP3, MAX_RODADAS_EXP3)  # O jogador joga até 500 giros ou quebrar
+        saldo_f = sessao["saldo_final"]  # Saldo que restou no bolso
 
-        if saldo_f > SALDO_INICIAL_EXP3:
-            categoria = "Ganho"
-        elif saldo_f == SALDO_INICIAL_EXP3:
-            categoria = "Empate"
-        else:
-            categoria = "Perda"
+        if saldo_f > SALDO_INICIAL_EXP3:  # Se terminou com mais de 100
+            categoria = "Ganho"  # Esse é o sortudo que vai postar print no Instagram
+        elif saldo_f == SALDO_INICIAL_EXP3:  # Terminou exatamente com 100
+            categoria = "Empate"  # Não ganhou nem perdeu, ficou no zero a zero
+        else:  # Terminou com menos de 100
+            categoria = "Perda"  # A dura realidade da maioria dos mortais
 
         participantes.append({
             "id_jogador": id_jogador,
@@ -125,23 +118,23 @@ def f_executarExperimento3(semente: int = SEMENTE_EXP3, numJogadores: int = NUME
         })
 
     # 3. Contagem e cálculo das proporções (somando exatamente 100%)
-    n_ganho = sum(1 for p in participantes if p["categoria"] == "Ganho")
-    n_empate = sum(1 for p in participantes if p["categoria"] == "Empate")
-    n_perda = sum(1 for p in participantes if p["categoria"] == "Perda")
-    assert (n_ganho + n_empate + n_perda) == numJogadores, "Erro: categorias de saldo não somam 100!"
+    n_ganho = sum(1 for p in participantes if p["categoria"] == "Ganho")    # Quantos ganharam
+    n_empate = sum(1 for p in participantes if p["categoria"] == "Empate")  # Quantos empataram
+    n_perda = sum(1 for p in participantes if p["categoria"] == "Perda")    # Quantos perderam
+    assert (n_ganho + n_empate + n_perda) == numJogadores, "Erro: categorias de saldo não somam 100!"  # Confere a soma
 
-    prop_ganho_pct = (n_ganho / numJogadores) * 100.0
-    prop_empate_pct = (n_empate / numJogadores) * 100.0
-    prop_perda_pct = (n_perda / numJogadores) * 100.0
+    prop_ganho_pct = (n_ganho / numJogadores) * 100.0   # Porcentagem de reis do cassino
+    prop_empate_pct = (n_empate / numJogadores) * 100.0  # Porcentagem de neutros
+    prop_perda_pct = (n_perda / numJogadores) * 100.0   # Porcentagem de derrotados (~75%)
 
     # Taxa de esgotamento (ruína do jogador, subconjunto das perdas)
-    n_esgotados = sum(1 for p in participantes if p["esgotou"])
-    taxa_esgotamento_pct = (n_esgotados / numJogadores) * 100.0
+    n_esgotados = sum(1 for p in participantes if p["esgotou"])  # Quantos perderam até o último tostão
+    taxa_esgotamento_pct = (n_esgotados / numJogadores) * 100.0  # Taxa de ruína total (~67%) SIXSEVEN???? perdão.
 
     # 4. Cálculo de medidas de centro (média vs mediana)
     saldos_finais = [p["saldo_final"] for p in participantes]
-    media_saldo_final = f_calcularMediaAmostral(saldos_finais)
-    mediana_saldo_final = f_calcularMediana(saldos_finais)
+    media_saldo_final = f_calcularMediaAmostral(saldos_finais)  # Média (~52.1): ilusão puxada pelos jackpots dos ganhadores
+    mediana_saldo_final = f_calcularMediana(saldos_finais)      # Mediana (0.0): a realidade nua e crua, mais da metade sai liso!
 
     # 5. Estruturação dos dados e exportação para CSV
     cabecalhos = ["ID_Jogador", "Saldo_Final", "Rodadas_Jogadas", "Esgotou", "Categoria"]
@@ -166,12 +159,12 @@ def f_executarExperimento3(semente: int = SEMENTE_EXP3, numJogadores: int = NUME
     linhas_tabela.append(["RESUMO", f"Mediana dos Saldos Finais: {mediana_saldo_final:.2f} créditos", "-", "-", "-"])
 
     caminho_csv = DIRETORIO_TABELAS / "exp3_participantes.csv"
-    f_exportarParaCsv(caminho_csv, cabecalhos, linhas_tabela)
+    f_exportarParaCsv(caminho_csv, cabecalhos, linhas_tabela)  # Grava o extrato de todos os 100 apostadores
 
     # 6. Geração do gráfico de trajetórias dos 5 primeiros participantes
-    trajetorias_cinco = [p["trajetoria_saldos"] for p in participantes[:5]]
+    trajetorias_cinco = [p["trajetoria_saldos"] for p in participantes[:5]]  # Pega os 5 primeiros da fila sem escolher
     caminho_figura = DIRETORIO_FIGURAS / "exp3_trajetorias.png"
-    f_plotarTrajetoriasSaldosExp3(trajetorias_cinco, SALDO_INICIAL_EXP3, caminho_figura)
+    f_plotarTrajetoriasSaldosExp3(trajetorias_cinco, SALDO_INICIAL_EXP3, caminho_figura)  # Desenha as curvas com patamar plano se quebrar
 
     # 7. Tabela resumo compacta para exibição
     cabecalhos_resumo = ["Métrica", "Valor Observado", "Observação Conceitual"]

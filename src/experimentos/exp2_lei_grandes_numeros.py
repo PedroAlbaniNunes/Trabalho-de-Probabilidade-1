@@ -4,19 +4,11 @@ Conceitos em ação (Seção 7 e 8 do edital):
 - Simulação de Monte Carlo e convergência assintótica.
 - Média acumulada ao longo das rodadas: \bar{X}_k = \frac{1}{k} \sum_{i=1}^k X_i.
 - Lei dos Grandes Números (LLN): convergência em probabilidade para E[X] = -0,16 créditos.
-- A LLN não garante convergência monótona nem teto de erro estrito em 10.000 rodadas.
+- A LLN não garante aproximação monótona (a média dá solavancos até se assentar).
 - Reprodutibilidade estrita e verificação de sementes pseudoaleatórias.
-
-Procedimento estipulado pelo edital:
-- Executar três sequências de 10.000 rodadas com as sementes: 10, 2026 e 123456.
-- Reutilizar a sequência da semente 2026 obtida no Experimento 1 (sem novo sorteio).
-- Para cada execução, registrar a média acumulada após 100, 1.000 e 10.000 rodadas.
-- Entregar uma tabela 3x3 com essas médias acumuladas e exportar para CSV.
-- Entregar um gráfico com as três trajetórias completas e a linha de referência horizontal em E[X] = -0,16.
-- Repetir a semente 2026 no mesmo ambiente e conferir se os 10 primeiros resultados coincidem elemento a elemento.
 """
 
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Dict, Any, List, Optional
 import random
 from pathlib import Path
 
@@ -41,7 +33,6 @@ from src.analise.metricas import (
 )
 from src.analise.exportador import (
     f_exportarParaCsv,
-    f_gerarTabelaFormatada,
 )
 from src.analise.graficos import (
     f_plotarConvergenciaMediasExp2,
@@ -54,70 +45,72 @@ def f_verificarReprodutibilidadePrimeirosResultados(semente: int = 2026, nResult
     Conforme a Seção 7 do edital:
     "Repetir a semente 2026, no mesmo ambiente, e conferir os dez primeiros resultados. Informar se foram reproduzidos."
 
-    Argumentos:
+    Args:
         semente (int): Semente pseudoaleatória utilizada (padrão do edital: 2026).
         nResultados (int): Quantidade de resultados iniciais a auditar (padrão: 10).
 
-    Retorna:
+    Returns:
         bool: True se a sequência de resultados foi rigorosamente reproduzida, False caso haja divergência.
     """
-    g1 = random.Random(semente)
-    g2 = random.Random(semente)
+    g1 = random.Random(semente)  # Primeira máquina ligada com a semente 2026
+    g2 = random.Random(semente)  # Segunda máquina idêntica ligada com a mesma semente
 
-    seq1 = [f_extrairLinhaCentral(f_sortearTabuleiro3x3(g1)) for _ in range(nResultados)]
-    seq2 = [f_extrairLinhaCentral(f_sortearTabuleiro3x3(g2)) for _ in range(nResultados)]
+    seq1 = [f_extrairLinhaCentral(f_sortearTabuleiro3x3(g1)) for _ in range(nResultados)]  # Primeiros 10 giros na máquina 1
+    seq2 = [f_extrairLinhaCentral(f_sortearTabuleiro3x3(g2)) for _ in range(nResultados)]  # Primeiros 10 giros na máquina 2
 
-    return seq1 == seq2
+    return seq1 == seq2  # Se bateu 100% igual, temos determinismo e reprodutibilidade científica!
 
 
 def f_executarExperimento2(dadosExp1: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     r"""Executa a simulação completa do Experimento 2 para análise da Lei dos Grandes Números.
 
-    Argumentos:
-        dadosExp1 (Optional[Dict[str, Any]]): Dados prévios da execução do Experimento 1 (para reaproveitamento).
+    Compara a trajetória de convergência de três sementes independentes (10, 2026 e 123456)
+    ao longo de 10.000 giros, gerando a tabela 3x3 e o gráfico de Monte Carlo.
 
-    Retorna:
+    Args:
+        dadosExp1 (Optional[Dict[str, Any]]): Dados prévios da execução do Experimento 1 (para reaproveitamento da semente 2026).
+
+    Returns:
         Dict[str, Any]: Dicionário contendo tabela 3x3, trajetórias completas e status de reprodução.
     """
     # 1. Obtenção dos dados da semente 2026 (reutilização obrigatória do Experimento 1)
     if dadosExp1 is None or "historico_lucros_X" not in dadosExp1:
         from src.experimentos.exp1_frequencias import f_executarExperimento1
-        dadosExp1 = f_executarExperimento1(semente=2026, totalRodadas=RODADAS_EXP2)
+        dadosExp1 = f_executarExperimento1(semente=2026, totalRodadas=RODADAS_EXP2)  # Roda E1 se o usuário não passou de bandeja
 
     lucros_por_semente: Dict[int, List[float]] = {}
-    lucros_por_semente[2026] = list(dadosExp1["historico_lucros_X"])
+    lucros_por_semente[2026] = list(dadosExp1["historico_lucros_X"])  # Pega carona no E1: não roda de novo o que já foi feito!
 
     # 2. Simulação das outras duas sementes fixadas no edital (10 e 123456)
-    outras_sementes = [s for s in SEMENTES_EXP2 if s != 2026]
+    outras_sementes = [s for s in SEMENTES_EXP2 if s != 2026]  # Separa as sementes restantes
 
-    for semente in outras_sementes:
-        gerador = random.Random(semente)
+    for semente in outras_sementes:  # Agora vamos rodar para as sementes 10 e 123456
+        gerador = random.Random(semente)  # Semente ligada no gerador independente
         lucros_s: List[float] = []
 
-        for _ in range(RODADAS_EXP2):
-            tabuleiro = f_sortearTabuleiro3x3(gerador)
-            linha_central = f_extrairLinhaCentral(tabuleiro)
-            premio_P = f_calcularPremioBruto(linha_central, TABELA_BASE)
-            lucro_X = f_calcularLucroLiquido(premio_P, CUSTO_APOSTA)
-            lucros_s.append(lucro_X)
+        for _ in range(RODADAS_EXP2):  # Mais 10 mil giros pra conta daquele gerador
+            tabuleiro = f_sortearTabuleiro3x3(gerador)  # Gira os rolos
+            linha_central = f_extrairLinhaCentral(tabuleiro)  # Olho vivo na linha do meio
+            premio_P = f_calcularPremioBruto(linha_central, TABELA_BASE)  # Checa a grana
+            lucro_X = f_calcularLucroLiquido(premio_P, CUSTO_APOSTA)  # Desconta 1 de aposta
+            lucros_s.append(lucro_X)  # Enfileira o lucro
 
-        lucros_por_semente[semente] = lucros_s
+        lucros_por_semente[semente] = lucros_s  # Armazena a bateria da semente
 
     # 3. Cálculo das trajetórias completas de médias acumuladas
-    # Garantir a ordem canônica: 10, 2026, 123456
-    ordem_sementes = [10, 2026, 123456]
+    ordem_sementes = [10, 2026, 123456]  # Ordem bonitinha estipulada pelo professor
     trajetorias_medias: Dict[int, List[float]] = {}
     medias_marcos: Dict[int, Dict[int, float]] = {}
 
     for semente in ordem_sementes:
-        medias_acum = f_calcularMediasAcumuladas(lucros_por_semente[semente])
-        trajetorias_medias[semente] = medias_acum
+        medias_acum = f_calcularMediasAcumuladas(lucros_por_semente[semente])  # Média acumulada: a evolução rodada a rodada
+        trajetorias_medias[semente] = medias_acum  # Guarda os 10.000 pontos pro gráfico
 
         # Extração das médias nos pontos de controle: N = 100, 1.000 e 10.000 rodadas
         medias_marcos[semente] = {
-            100: medias_acum[99],
-            1000: medias_acum[999],
-            10000: medias_acum[9999],
+            100: medias_acum[99],      # Amostra pequena: montanha-russa total (pode dar até lucro positivo!)
+            1000: medias_acum[999],    # Amostra média: a água começa a bater na bunda e a casa ganha terreno
+            10000: medias_acum[9999],  # Amostra grande: o abraço da Lei dos Grandes Números puxando pra -0.16
         }
 
     # 4. Construção da Tabela 3x3 de Médias Acumuladas
@@ -147,11 +140,11 @@ def f_executarExperimento2(dadosExp1: Optional[Dict[str, Any]] = None) -> Dict[s
 
     # 5. Exportação da Tabela CSV
     caminho_csv = DIRETORIO_TABELAS / "exp2_medias_acumuladas.csv"
-    f_exportarParaCsv(caminho_csv, cabecalhos, linhas_tabela)
+    f_exportarParaCsv(caminho_csv, cabecalhos, linhas_tabela)  # Cospe o CSV na pasta de resultados
 
     # 6. Geração do Gráfico de Convergência de Trajetórias
     caminho_figura = DIRETORIO_FIGURAS / "exp2_convergencia.png"
-    esperanca_teorica = -0.16
+    esperanca_teorica = -0.16  # Linha vermelha da morte: onde todas as trajetórias vão convergir
     f_plotarConvergenciaMediasExp2(
         trajetorias_medias,
         esperanca_teorica,
@@ -159,7 +152,7 @@ def f_executarExperimento2(dadosExp1: Optional[Dict[str, Any]] = None) -> Dict[s
     )
 
     # 7. Auditoria dos 10 primeiros resultados da semente 2026
-    g_audit = random.Random(2026)
+    g_audit = random.Random(2026)  # Nova semente pra ver se é determinístico mesmo
     dez_primeiros_audit = [f_extrairLinhaCentral(f_sortearTabuleiro3x3(g_audit)) for _ in range(10)]
     dez_primeiros_e1 = dadosExp1["historico_linhas_centrais"][:10]
     reproduzido_exato = (dez_primeiros_audit == dez_primeiros_e1) and f_verificarReprodutibilidadePrimeirosResultados(2026, 10)

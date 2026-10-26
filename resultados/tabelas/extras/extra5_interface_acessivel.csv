@@ -1,0 +1,21 @@
+Categoria_Auditoria,Componente_ou_Passo,Par_Cores_ou_Comando,Metrica_ou_Evidencia,Classificacao_Conformidade
+1. Contraste WCAG 2.1,Escuro: Texto Principal,Texto #FFFFFF sobre Fundo #121212,Razão CR = 18.73 : 1,"WCAG AAA (>= 7,0:1)"
+1. Contraste WCAG 2.1,Escuro: Linha Central,Texto #FFD700 sobre Fundo #121212,Razão CR = 13.36 : 1,"WCAG AAA (>= 7,0:1)"
+1. Contraste WCAG 2.1,Escuro: Alerta Vitória,Texto #56B4E9 sobre Fundo #121212,Razão CR = 8.12 : 1,"WCAG AAA (>= 7,0:1)"
+1. Contraste WCAG 2.1,Escuro: Alerta Derrota,Texto #FFA500 sobre Fundo #121212,Razão CR = 9.49 : 1,"WCAG AAA (>= 7,0:1)"
+1. Contraste WCAG 2.1,Escuro: Foco Teclado (Tab),Texto #00FFCC sobre Fundo #121212,Razão CR = 14.43 : 1,"WCAG AAA (>= 7,0:1)"
+1. Contraste WCAG 2.1,Claro: Texto Principal,Texto #111111 sobre Fundo #FFFFFF,Razão CR = 18.88 : 1,"WCAG AAA (>= 7,0:1)"
+1. Contraste WCAG 2.1,Claro: Linha Central,Texto #003366 sobre Fundo #FFFFFF,Razão CR = 12.61 : 1,"WCAG AAA (>= 7,0:1)"
+1. Contraste WCAG 2.1,Claro: Alerta Vitória,Texto #004D40 sobre Fundo #FFFFFF,Razão CR = 9.83 : 1,"WCAG AAA (>= 7,0:1)"
+1. Contraste WCAG 2.1,Claro: Alerta Derrota,Texto #7F0000 sobre Fundo #FFFFFF,Razão CR = 11.04 : 1,"WCAG AAA (>= 7,0:1)"
+1. Contraste WCAG 2.1,Claro: Foco Teclado (Tab),Texto #00008B sobre Fundo #FFFFFF,Razão CR = 15.30 : 1,"WCAG AAA (>= 7,0:1)"
+2. Independência de Cor,Símbolo A,Forma Geométrica: Círculo (●),Rótulo Redundante: '● A' (5 cr.),APROVADO (Não depende de cor)
+2. Independência de Cor,Símbolo B,Forma Geométrica: Triângulo (▲),Rótulo Redundante: '▲ B' (10 cr.),APROVADO (Não depende de cor)
+2. Independência de Cor,Símbolo C,Forma Geométrica: Quadrado (■),Rótulo Redundante: '■ C' (15 cr.),APROVADO (Não depende de cor)
+2. Independência de Cor,Símbolo D,Forma Geométrica: Losango (◆),Rótulo Redundante: '◆ D' (25 cr.),APROVADO (Não depende de cor)
+2. Independência de Cor,Símbolo E,Forma Geométrica: Estrela (★),Rótulo Redundante: '★ E' (50 cr.),APROVADO (Não depende de cor)
+3. Verificação de Uso (Teclado),Uso Teclado #1 (Tecla ESPAÇO),Giro 1 | Saldo: 99.00 cr.,[○ STATUS: DERROTA - SEM PRÊMIO (▲ B | ◆ D | ● A)] Prêmio Bruto (P): 0.00 cr. | Lucro Líquido (X): -1.00 cr.,APROVADO (Teclado + Forma + Rótulo Textual)
+3. Verificação de Uso (Teclado),Uso Teclado #2 (Tecla ESPAÇO),Giro 2 | Saldo: 98.00 cr.,[○ STATUS: DERROTA - SEM PRÊMIO (● A | ▲ B | ■ C)] Prêmio Bruto (P): 0.00 cr. | Lucro Líquido (X): -1.00 cr.,APROVADO (Teclado + Forma + Rótulo Textual)
+3. Verificação de Uso (Teclado),Uso Teclado #3 (Tecla ESPAÇO),Giro 3 | Saldo: 102.00 cr.,[★ STATUS: VITÓRIA - TRIPLA PREMIADA (Círculos: ● A | ● A | ● A)] Prêmio Bruto (P): 5.00 cr. | Lucro Líquido (X): +4.00 cr.,APROVADO (Teclado + Forma + Rótulo Textual)
+3. Verificação de Uso (Teclado),Uso Teclado #4 (Tecla T),Alternância instantânea de tema sem uso de mouse,[TEMA ALTERADO VIA TECLADO (Tecla T)]: Alto Contraste Claro (WCAG AAA),APROVADO (Tema Alto Contraste Claro Ativado)
+3. Verificação de Uso (Teclado),Uso Teclado #5 (Tecla R),Reinicialização completa da sessão via atalho,"[SESSÃO REINICIADA VIA TECLADO (Tecla R) | Saldo = 100,00 cr.]","APROVADO (Estado Reiniciado para B0 = 100,00 cr.)"

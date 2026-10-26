@@ -41,6 +41,13 @@ from src.experimentos.exp4_prob_condicional import (
 from src.experimentos.exp5_premios_maiores import (
     f_executarExperimento5,
 )
+from src.extras import (
+    f_executarExtra1IntervalosConfianca,
+    f_executarExtra2RiscosDiferentes,
+    f_executarExtra3LimitesExposicao,
+    f_executarExtra4AnaliseSensibilidade,
+    f_executarExtra5InterfaceAcessivel,
+)
 
 
 def test_f_pagamentosTriplasEOutrasCombinacoes() -> None:
@@ -159,3 +166,65 @@ def test_f_casoLimiteSaldoInsuficiente() -> None:
     aposta = 1.0
     pode_jogar = saldo >= aposta
     assert not pode_jogar, "Jogador com saldo insuficiente não deveria poder apostar."
+
+
+def test_f_extra1_intervalos_confianca() -> None:
+    """Verifica a construção dos intervalos de confiança de 95% e execuções independentes (Extra 1)."""
+    res = f_executarExtra1IntervalosConfianca(numExecucoes=30, nRodadasPorExecucao=10_000, sementeInicial=2026)
+    assert res["num_execucoes"] == 30
+    assert len(res["registros_execucoes"]) == 30
+    assert res["canonico"]["li_lucro"] < res["canonico"]["media_lucro"] < res["canonico"]["ls_lucro"]
+    assert res["li_global_lucro"] <= -0.16 <= res["ls_global_lucro"]
+    assert res["caminho_csv"].exists()
+    assert res["caminho_figura"].exists()
+
+
+def test_f_extra2_mesma_media_riscos_diferentes() -> None:
+    """Verifica se as 3 tabelas de risco mantêm exatamente E[X] = -0,16 e RTP = 84% com desvios distintos (Extra 2)."""
+    res = f_executarExtra2RiscosDiferentes()
+    assert res["esperancas_iguais"] is True
+    perfis = res["resumo_perfis"]
+    assert len(perfis) == 3
+    # Desvio-padrão teórico deve crescer da Baixa Volatilidade para a Alta Volatilidade
+    assert perfis[0]["dp_teorico"] < perfis[1]["dp_teorico"] < perfis[2]["dp_teorico"]
+    assert res["caminho_csv"].exists()
+    assert res["caminho_figura"].exists()
+
+
+def test_f_extra3_limites_exposicao() -> None:
+    """Verifica a comparação de regras de parada e redução da exposição média (Extra 3)."""
+    res = f_executarExtra3LimitesExposicao()
+    regras = res["resultados_regras"]
+    assert len(regras) == 3
+    # Regra 2 (Stop-Win 120 + Stop-Loss 70) deve ter exposição média menor e ruína total zero
+    assert regras[1]["media_rodadas"] < regras[0]["media_rodadas"]
+    assert regras[1]["taxa_ruina_pct"] == 0.0
+    assert res["caminho_csv"].exists()
+    assert res["caminho_figura"].exists()
+
+
+def test_f_extra4_analise_sensibilidade() -> None:
+    """Verifica os 7 cenários da Análise de Sensibilidade (Extra 4)."""
+    res = f_executarExtra4AnaliseSensibilidade()
+    cenarios = res["cenarios"]
+    assert len(cenarios) >= 5
+    # Cenário 4 é o ponto de equilíbrio (RTP = 100%, E[X] = 0)
+    assert math.isclose(cenarios[3]["rtp_teorico_pct"], 100.0, abs_tol=1e-4)
+    assert math.isclose(cenarios[3]["esp_lucro_teo"], 0.0, abs_tol=1e-4)
+    # Cenário 5 é favorável ao jogador (E[X] > 0)
+    assert cenarios[4]["esp_lucro_teo"] > 0.0
+    assert res["caminho_csv"].exists()
+    assert res["caminho_figura"].exists()
+
+
+def test_f_extra5_interface_acessivel() -> None:
+    """Verifica a auditoria de contraste WCAG 2.1 AAA, redundância de formas e uso por teclado (Extra 5)."""
+    res = f_executarExtra5InterfaceAcessivel()
+    assert res["todos_wcag_aaa"] is True
+    assert res["menor_razao_contraste"] >= 7.0
+    assert len(res["roteiro_verificacao"]) == 5
+    assert ">>>" in res["tabuleiro_exemplo_str"]
+    assert res["caminho_csv"].exists()
+    assert res["caminho_figura"].exists()
+
+

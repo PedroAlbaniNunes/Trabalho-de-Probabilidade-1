@@ -1,0 +1,4 @@
+Perfil de Risco,Prêmios (A..E),E[X] / RTP Teo.,DP Teórico (σ),DP Obs. (10k),Saldo Médio (E3),Mediana (E3),Saldo Máx.,Ruína (%),Ganho (%)
+Baixa Volatilidade,"(21, 21, 21, 21, 21)",-0.16 (84%),4.1151,4.1740,44.15,0.00,356,63.0%,23.0%
+Base (Moderada),"(5, 10, 15, 25, 50)",-0.16 (84%),5.2052,5.2750,52.10,0.00,390,67.0%,23.0%
+Alta Volatilidade,"(1, 2, 2, 10, 90)",-0.16 (84%),8.0602,8.1139,84.99,0.00,721,69.0%,29.0%

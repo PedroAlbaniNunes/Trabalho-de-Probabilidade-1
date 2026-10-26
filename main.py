@@ -30,6 +30,14 @@ from src.experimentos.exp2_lei_grandes_numeros import f_executarExperimento2
 from src.experimentos.exp3_saldo_limitado import f_executarExperimento3
 from src.experimentos.exp4_prob_condicional import f_executarExperimento4
 from src.experimentos.exp5_premios_maiores import f_executarExperimento5
+from src.extras import (
+    f_executarExtra1IntervalosConfianca,
+    f_executarExtra2RiscosDiferentes,
+    f_executarExtra3LimitesExposicao,
+    f_executarExtra4AnaliseSensibilidade,
+    f_executarExtra5InterfaceAcessivel,
+    f_iniciarJanelaAcessivelTkinter,
+)
 
 
 def f_exibirCabecalho() -> None:
@@ -38,12 +46,12 @@ def f_exibirCabecalho() -> None:
     Apresenta a identificação institucional da disciplina e o aviso legal
     determinado pelo edital: 'Simulador acadêmico - somente créditos fictícios'.
     """
-    largura = 70
-    print("=" * largura)
-    print("  IFES - CAMPUS SERRA | PROBABILIDADE E ESTATÍSTICA I  ".center(largura))
-    print("  MÁQUINA ESTATÍSTICA: Probabilidade, Apostas e Pensamento Crítico  ".center(largura))
+    largura = 78
+    print("\n" + "=" * largura)
+    print("IFES - CAMPUS SERRA | PROBABILIDADE E ESTATÍSTICA I".center(largura))
+    print("MÁQUINA ESTATÍSTICA: Probabilidade, Apostas e Pensamento Crítico".center(largura))
     print("-" * largura)
-    print(f"  [AVISO]: {AVISO_LEGAL}  ".center(largura))
+    print(f"[AVISO OBRIGATÓRIO]: {AVISO_LEGAL}".center(largura))
     print("=" * largura)
 
 
@@ -72,6 +80,131 @@ def f_executarRodadaDemonstrativa() -> None:
     print("-" * 50)
 
 
+def f_menuPontosExtras() -> None:
+    """Submenu dedicado à execução dos experimentos de Pontos Extras (Seção 10 do Edital)."""
+    largura = 78
+    while True:
+        print("\n" + "=" * largura)
+        print("SUBMENU — EXPERIMENTOS DE PONTOS EXTRAS (SEÇÃO 10 DO EDITAL)".center(largura))
+        print("=" * largura)
+
+        print("\n  >> EXPERIMENTOS INDIVIDUAIS (SEÇÃO 10):")
+        print("     [1] Extra 1 — Intervalos de Confiança (30 Execuções Independentes | até 4 pts)")
+        print("     [2] Extra 2 — Mesma Média, Riscos Diferentes (3 Tabelas RTP 84%   | até 4 pts)")
+        print("     [3] Extra 3 — Limites de Exposição e Parada (Stop-Win / Stop-Loss | até 3 pts)")
+        print("     [4] Extra 4 — Análise de Sensibilidade (7 Cenários Paramétricos   | até 3 pts)")
+        print("     [5] Extra 5 — Interface Acessível (Auditoria WCAG 2.1 e Teclado   | até 3 pts)")
+
+        print("\n  >> RECURSOS INTERATIVOS E EXECUÇÃO EM LOTE:")
+        print("     [6] Abrir Janela Gráfica Acessível (Tkinter — Operação 100% por Teclado)")
+        print("     [7] Executar TODOS os 5 Experimentos Extras em lote (Gera CSVs e PNGs)")
+
+        print("\n  >> NAVEGAÇÃO:")
+        print("     [0] Voltar ao Menu Principal")
+        print("-" * largura)
+
+        op = input("  Selecione uma opção [0-7]: ").strip()
+
+        if op == "1":
+            print("\nExecutando Extra 1: Intervalos de Confiança (30 execuções de 10.000 giros)... Aguarde...")
+            res1 = f_executarExtra1IntervalosConfianca()
+            print("\n" + f_gerarTabelaFormatada(res1["cabecalhos_resumo"], res1["tabela_resumo"]))
+            print("\n--- INTERPRETAÇÃO (EXTRA 1 - INTERVALOS DE CONFIANÇA) ---")
+            print("Método: IC 95% via distribuição t-Student (gl=9.999 por amostra; gl=29 entre as 30 médias).")
+            print(f"Taxa de cobertura observada: {res1['qtd_cobriu']}/{res1['num_execucoes']} ({res1['taxa_cobertura_pct']:.1f}%) dos ICs contiveram E[X] = -0,16.")
+            print(f"CSV salvo em:    {res1['caminho_csv']}")
+            print(f"Figura salva em: {res1['caminho_figura']}")
+            input("\nPressione ENTER para continuar...")
+
+        elif op == "2":
+            print("\nExecutando Extra 2: Mesma Média, Riscos Diferentes (RTP = 84%, E[X] = -0,16)... Aguarde...")
+            res2 = f_executarExtra2RiscosDiferentes()
+            print("\n" + f_gerarTabelaFormatada(res2["cabecalhos"], res2["linhas_tabela"]))
+            print("\n--- INTERPRETAÇÃO (EXTRA 2 - MESMA MÉDIA, RISCOS DIFERENTES) ---")
+            print(f"Igualdade analítica das esperanças conferida (E[X] = -0,16 e RTP = 84%): {res2['esperancas_iguais']}")
+            print("A tabela de Baixa Volatilidade reduz os extremos, mas acelera a drenagem previsível;")
+            print("a tabela de Alta Volatilidade gera raros jackpots altos (maior saldo máximo), mas eleva a dispersão.")
+            print(f"CSV salvo em:    {res2['caminho_csv']}")
+            print(f"Figura salva em: {res2['caminho_figura']}")
+            input("\nPressione ENTER para continuar...")
+
+        elif op == "3":
+            print("\nExecutando Extra 3: Limites de Exposição e Regras de Parada... Aguarde...")
+            res3 = f_executarExtra3LimitesExposicao()
+            print("\n" + f_gerarTabelaFormatada(res3["cabecalhos"], res3["linhas_tabela"]))
+            print("\n--- INTERPRETAÇÃO (EXTRA 3 - LIMITES DE EXPOSIÇÃO) ---")
+            print("Pela Identidade de Wald (E[Bf - B0] = E[X] * E[T]), regras de Stop-Win/Stop-Loss não alteram")
+            print("a esperança negativa por rodada (E[X] = -0,16), mas reduzem a exposição média (T̄),")
+            print("preservando o saldo contra a ruína total.")
+            print(f"CSV salvo em:    {res3['caminho_csv']}")
+            print(f"Figura salva em: {res3['caminho_figura']}")
+            input("\nPressione ENTER para continuar...")
+
+        elif op == "4":
+            print("\nExecutando Extra 4: Análise de Sensibilidade (7 Cenários)... Aguarde...")
+            res4 = f_executarExtra4AnaliseSensibilidade()
+            print("\n" + f_gerarTabelaFormatada(res4["cabecalhos"], res4["linhas_tabela"]))
+            print("\n--- INTERPRETAÇÃO (EXTRA 4 - ANÁLISE DE SENSIBILIDADE) ---")
+            print("O jogo só atinge equilíbrio (E[X] = 0, RTP = 100%) quando os prêmios sobem +19,05% (C4),")
+            print("e torna-se favorável ao jogador em +25% (C5). Já alterar a estrutura dos rolos (C6 e C7)")
+            print("demonstra que elevar a frequência de acertos baratos (C7: 5,56%) pode até reduzir o RTP (64,81%).")
+            print(f"CSV salvo em:    {res4['caminho_csv']}")
+            print(f"Figura salva em: {res4['caminho_figura']}")
+            input("\nPressione ENTER para continuar...")
+
+        elif op == "5":
+            print("\nExecutando Extra 5: Interface Acessível e Verificação de Uso... Aguarde...")
+            res5 = f_executarExtra5InterfaceAcessivel()
+            print("\n" + f_gerarTabelaFormatada(res5["cabecalhos_resumo"], res5["tabela_resumo"]))
+            print("\n--- DEMONSTRAÇÃO DO TABULEIRO ACESSÍVEL (FORMAS + LETRAS + MOLDURA DUPLA) ---")
+            print(res5["tabuleiro_exemplo_str"])
+            print("\n--- ROTEIRO DE VERIFICAÇÃO DE USO POR TECLADO ---")
+            for p in res5["roteiro_verificacao"]:
+                print(f"  * {p['passo']}: {p['evidencia_observada']}")
+            print(f"\nCSV salvo em:    {res5['caminho_csv']}")
+            print(f"Figura salva em: {res5['caminho_figura']}")
+            input("\nPressione ENTER para continuar...")
+
+        elif op == "6":
+            print("\nAbrindo Janela Gráfica Acessível (Tkinter)... Use ESPAÇO, T, R e ESC no teclado.")
+            f_iniciarJanelaAcessivelTkinter()
+
+        elif op == "7":
+            print("\n======================================================================")
+            print("  EXECUTANDO BATERIA COMPLETA DE PONTOS EXTRAS (EXTRAS 1 A 5)  ")
+            print("======================================================================")
+            print("1/5: Executando Extra 1 (Intervalos de Confiança)...")
+            res1 = f_executarExtra1IntervalosConfianca()
+            print("\n" + f_gerarTabelaFormatada(res1["cabecalhos_resumo"], res1["tabela_resumo"]))
+
+            print("\n2/5: Executando Extra 2 (Mesma Média, Riscos Diferentes)...")
+            res2 = f_executarExtra2RiscosDiferentes()
+            print("\n" + f_gerarTabelaFormatada(res2["cabecalhos"], res2["linhas_tabela"]))
+
+            print("\n3/5: Executando Extra 3 (Limites de Exposição e Regras de Parada)...")
+            res3 = f_executarExtra3LimitesExposicao()
+            print("\n" + f_gerarTabelaFormatada(res3["cabecalhos"], res3["linhas_tabela"]))
+
+            print("\n4/5: Executando Extra 4 (Análise de Sensibilidade em 7 Cenários)...")
+            res4 = f_executarExtra4AnaliseSensibilidade()
+            print("\n" + f_gerarTabelaFormatada(res4["cabecalhos"], res4["linhas_tabela"]))
+
+            print("\n5/5: Executando Extra 5 (Interface Acessível e Verificação de Uso)...")
+            res5 = f_executarExtra5InterfaceAcessivel()
+            print("\n" + f_gerarTabelaFormatada(res5["cabecalhos_resumo"], res5["tabela_resumo"]))
+
+            print("\n>> Sucesso! Todos os 5 experimentos de pontos extras foram exportados para:")
+            print("   - Tabelas CSV: resultados/tabelas/extras/")
+            print("   - Gráficos PNG: resultados/figuras/extras/")
+            print("======================================================================")
+            input("\nPressione ENTER para voltar ao menu de pontos extras...")
+
+        elif op == "0":
+            break
+        else:
+            print("\nOpção inválida! Tente novamente.")
+
+
 def f_menuPrincipal() -> None:
     """Apresenta o menu textual interativo com as opções disponíveis no terminal.
 
@@ -79,20 +212,30 @@ def f_menuPrincipal() -> None:
     cada experimento, rodar demonstrações avulsas ou disparar a bateria completa.
     """
     dados_exp1 = None  # guarda os dados do E1 pra reaproveitar nos experimentos pareados (E2, E4, E5)
+    largura = 78
 
     while True:
         f_exibirCabecalho()
-        print("\nEscolha uma opção:")
-        print("  1. Exibir uma rodada demonstrativa (tabuleiro 3x3 e premiação)")
-        print("  2. Executar Experimento 1 (Frequências vs Probabilidades em 10.000 rodadas)")
-        print("  3. Executar Experimento 2 (Lei dos Grandes Números e Monte Carlo com 3 Sementes)")
-        print("  4. Executar Experimento 3 (Simulação com Saldo Limitado e Ruína - 100 Jogadores)")
-        print("  5. Executar Experimento 4 (Probabilidade Condicional e Falácia do Apostador)")
-        print("  6. Executar Experimento 5 (Prêmios Maiores +10% Tornam o Jogo Favorável?)")
-        print("  7. Executar todos os experimentos em lote (Gera todas as tabelas e gráficos)")
-        print("  0. Sair")
 
-        escolha = input("\nDigite o número da opção desejada: ").strip()  # lê o comando do usuário limpinho sem espaços soltos
+        print("\n  >> DEMONSTRAÇÃO DA MÁQUINA:")
+        print("     [1] Rodada Demonstrativa Isolada       (Sorteio da grade 3x3 e linha central)")
+
+        print("\n  >> EXPERIMENTOS OBRIGATÓRIOS (SEÇÃO 7 DO EDITAL):")
+        print("     [2] Experimento 1 — Frequências vs. Probabilidades     (10.000 giros | Seed 2026)")
+        print("     [3] Experimento 2 — Lei dos Grandes Números            (3 Sementes   | Monte Carlo)")
+        print("     [4] Experimento 3 — Saldo Limitado e Risco de Ruína    (100 Jogadores| Seed 42)")
+        print("     [5] Experimento 4 — Probabilidade Condicional          (9.999 Pares  | Falácia)")
+        print("     [6] Experimento 5 — Prêmios Maiores (+10%)             (Comparação Pareada)")
+
+        print("\n  >> EXECUÇÃO EM LOTE E PONTOS EXTRAS (SEÇÃO 10 DO EDITAL):")
+        print("     [7] Executar Bateria Completa (Exp. 1 a 5)             (Exporta CSVs e Figuras PNG)")
+        print("     [8] Submenu de Pontos Extras (Extras 1 a 5)            (IC, Riscos, Parada, WCAG...)")
+
+        print("\n  >> SISTEMA:")
+        print("     [0] Encerrar o Simulador")
+        print("-" * largura)
+
+        escolha = input("  Selecione uma opção [0-8]: ").strip()  # lê o comando do usuário limpinho sem espaços soltos
 
         if escolha == "1":
             f_executarRodadaDemonstrativa()  # roda aquele giro demonstrativo maroto na tela
@@ -203,12 +346,17 @@ def f_menuPrincipal() -> None:
             print("=======================================================")
             input("\nPressione ENTER para voltar ao menu...")
 
+        elif escolha == "8":
+            f_menuPontosExtras()
+
         elif escolha == "0":
-            print("\nEncerrando o simulador acadêmico. Bons estudos!")
+            print("\nEncerrando o simulador acadêmico.")
             sys.exit(0)  # tchau e benção: encerra o programa tranquilamente
         else:
             print("\nOpção inválida! Tente novamente.")
 
 
 if __name__ == "__main__":
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
     f_menuPrincipal()

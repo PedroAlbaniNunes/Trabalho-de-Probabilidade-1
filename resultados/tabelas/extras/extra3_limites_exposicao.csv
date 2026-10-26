@@ -1,0 +1,4 @@
+Regra de Parada,Critério A Priori,Exposição Média (T̄),Ganho (%),Perda (%),Ruína (%),Saldo Médio (B̄f),Mediana (Md),"Ref. Wald (100-0,16·T̄)",Lucro/Giro Obs.
+Regra 1: Sem Limite (Padrão E3),T <= 500 ou Ruína (B < 1),339.90 giros,23.0%,75.0%,67.0%,52.10,0.00,45.62,-0.1409
+Regra 2: Stop-Win (120) + Stop-Loss (70),"B >= 120, B <= 70 ou T <= 200",31.32 giros,48.0%,52.0%,0.0%,101.13,70.00,94.99,+0.0361
+Regra 3: Meta Curta (Stop-Win 110),"B >= 110, Ruína (B < 1) ou T <= 500",76.60 giros,76.0%,24.0%,24.0%,96.70,120.50,87.74,-0.0431

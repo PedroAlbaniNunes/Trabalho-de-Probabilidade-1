@@ -52,6 +52,32 @@ O simulador implementa cinco experimentos acadêmicos que investigam o comportam
 
 ---
 
+## Síntese dos Pontos Extras Implementados (`src/extras/`)
+
+Além dos cinco experimentos fundamentais, o projeto implementa cinco módulos adicionais em `src/extras/` (acessíveis pela **Opção 8** do menu principal) e uma suíte expandida de testes automatizados:
+
+### Extra 1: Intervalos de Confiança (`extra1_intervalos_confianca.py`)
+- **Objetivo:** Construir intervalos de confiança de $95\%$ (distribuição $t$ de Student) para o lucro médio por rodada ($\mu_X$) e para o retorno ao jogador ($\text{RTP}$).
+- **Aspectos Analisados:** Estimativa intervalar na amostra canônica (semente `2026`, $N = 10.000$) e verificação empírica da taxa de cobertura sobre $M = 30$ execuções independentes de $10.000$ rodadas (sementes `2026` a `2055`, totalizando $300.000$ giros).
+
+### Extra 2: Mesma Média, Riscos Diferentes (`extra2_riscos_diferentes.py`)
+- **Objetivo:** Comparar três tabelas de pagamento que preservam exatamente a mesma esperança ($E[X] = -0,16$) e o mesmo retorno ($\text{RTP} = 84,00\%$), mas possuem diferentes níveis de volatilidade ($\sigma$).
+- **Aspectos Analisados:** Simulação de $100$ participantes ($B_0 = 100$, até $500$ giros, semente `42`) sob as tabelas de **Baixa Volatilidade** ($\sigma = 4,1151$), **Base** ($\sigma = 5,2052$) e **Alta Volatilidade** ($\sigma = 8,0602$), demonstrando o efeito da dispersão sobre a taxa de ruína e os saldos extremos enquanto a mediana permanece em $0,00$.
+
+### Extra 3: Limites de Exposição (`extra3_limites_exposicao.py`)
+- **Objetivo:** Avaliar o efeito de regras de parada definidas *a priori* (*Stop-Win* e *Stop-Loss*) sobre a exposição do apostador e a distribuição dos saldos finais.
+- **Aspectos Analisados:** Confronto entre 3 políticas de parada (*Sem Stop*, *Stop-Win 120 + Stop-Loss 70* e *Stop-Win 110*) à luz da Identidade de Wald ($E[B_T - B_0] = E[X] \cdot E[T]$), comprovando que limites de exposição contêm o dano financeiro ao reduzir o tempo médio de permanência $\bar{T}$, sem alterar a esperança negativa por rodada.
+
+### Extra 4: Análise de Sensibilidade (`extra4_analise_sensibilidade.py`)
+- **Objetivo:** Investigar a resposta do modelo a variações sistemáticas nos pagamentos e na composição probabilística dos rolos.
+- **Aspectos Analisados:** Simulação de 7 cenários ($N = 10.000$, semente `2026`), abrangendo variações lineares nos prêmios (`-20%`, `Base`, `+10%`, ponto de equilíbrio `+19,05%` com $\text{RTP} = 100\%$ e cenário favorável ao jogador `+25%` com $\text{RTP} = 105\%$) e alterações na geometria dos rolos (`6 símbolos equiprováveis` e `rolo com símbolo A duplicado`).
+
+### Extra 5: Interface Acessível (`extra5_interface_acessivel.py`)
+- **Objetivo:** Oferecer uma interface interativa (em modo console e janela gráfica `tkinter`) projetada sob critérios formais de acessibilidade.
+- **Aspectos Analisados:** Controle integral por teclado (`[Espaço/Enter]`, `[T]`, `[R]`, `[Tab]`, `[Esc/Q]`), cálculo matemático de luminância relativa e razão de contraste W3C/WCAG 2.1 (aprovando todos os 10 pares de cores dos temas Escuro e Claro em nível máximo **WCAG AAA $\ge 7,0:1$**), redundância não-cromática por formas geométricas (`● A`, `▲ B`, `■ C`, `◆ D`, `★ E`), paleta científica daltônica *Okabe-Ito* com hachuras e roteiro automatizado de verificação de uso.
+
+---
+
 ## Tecnologias e Bibliotecas
 
 - **Linguagem:** Python (versão 3.10 ou superior; validado no Python 3.12)
@@ -88,6 +114,15 @@ tigrinhoManipulado/
 │   │   ├── exp4_prob_condicional.py     # Exp 4: Probabilidade condicional e independência
 │   │   └── exp5_premios_maiores.py      # Exp 5: Comparação pareada (+10% de premiação)
 │   │
+│   ├── extras/                          # Experimentos de Pontos Extras (Seção 10 do Edital)
+│   │   ├── __init__.py
+│   │   ├── extra1_intervalos_confianca.py # Extra 1: Intervalos de confiança (30 execuções)
+│   │   ├── extra2_riscos_diferentes.py    # Extra 2: Mesma média (RTP 84%), riscos diferentes
+│   │   ├── extra3_limites_exposicao.py    # Extra 3: Limites de exposição e regras de parada
+│   │   ├── extra4_analise_sensibilidade.py# Extra 4: Análise de sensibilidade (7 cenários)
+│   │   ├── extra5_interface_acessivel.py  # Extra 5: Interface acessível (WCAG 2.1 e teclado)
+│   │   └── graficos_extras.py             # Geração das figuras exclusivas dos pontos extras
+│   │
 │   └── analise/                         # Funções analíticas e persistência
 │       ├── __init__.py
 │       ├── metricas.py                  # Média amostral, desvio-padrão (N-1) e RTP
@@ -96,11 +131,11 @@ tigrinhoManipulado/
 │
 ├── tests/                               # Validação automatizada
 │   ├── __init__.py
-│   └── test_validacoes.py               # Conjunto de 9 testes de integridade via pytest
+│   └── test_validacoes.py               # Conjunto de 14 testes de integridade via pytest
 │
 └── resultados/                          # Artefatos gerados pelas simulações
-    ├── tabelas/                         # Arquivos .csv com as tabelas de cada experimento
-    └── figuras/                         # Gráficos de alta resolução em formato .png
+    ├── tabelas/                         # Arquivos .csv dos experimentos (e subpasta extras/)
+    └── figuras/                         # Gráficos .png de alta resolução (e subpasta extras/)
 ```
 
 ---
@@ -180,6 +215,7 @@ O menu disponibiliza as seguintes opções:
 - **Opção 1:** Realizar uma rodada demonstrativa isolada com visualização da grade $3 \times 3$ e apuração de prêmio na linha central.
 - **Opções 2 a 6:** Executar individualmente os Experimentos 1, 2, 3, 4 ou 5, exibindo tabelas formatadas e estatísticas no terminal.
 - **Opção 7:** Executar a bateria completa de experimentos em lote, gerando simultaneamente todos os relatórios em `.csv` e gráficos em `.png`.
+- **Opção 8:** Abrir o **Menu de Pontos Extras (Seção 10 do Edital)**, permitindo executar individualmente ou em lote os 5 experimentos extras (*Intervalos de Confiança*, *Mesma Média e Riscos Diferentes*, *Limites de Exposição*, *Análise de Sensibilidade* e *Auditoria de Interface Acessível*), além de iniciar o simulador interativo acessível (console ou janela gráfica `tkinter`).
 - **Opção 0:** Encerrar o programa.
 
 ---
@@ -201,6 +237,11 @@ O conjunto de testes verifica:
 7. Independência estocástica e validação dos $9.999$ pares consecutivos do Experimento 4.
 8. Propriedades de linearidade na comparação pareada de tabelas do Experimento 5.
 9. Caso-limite de saldo insuficiente impedindo a continuidade de apostas.
+10. Construção de Intervalos de Confiança de $95\%$ e taxa de cobertura em 30 execuções independentes (Extra 1).
+11. Invariância de $E[X] = -0,16$ e $\text{RTP} = 84\%$ sob três perfis distintos de volatilidade $\sigma$ (Extra 2).
+12. Efeito de regras de parada (*Stop-Win* e *Stop-Loss*) sobre a exposição média $\bar{T}$ e ruína (Extra 3).
+13. Análise de sensibilidade em 7 cenários de variação de pagamentos e probabilidades (Extra 4).
+14. Auditoria de contraste WCAG 2.1 AAA, redundância não-cromática e verificação de uso por teclado (Extra 5).
 
 ---
 
@@ -208,17 +249,27 @@ O conjunto de testes verifica:
 
 A execução dos experimentos produz automaticamente arquivos nas seguintes pastas:
 
-- **Tabelas de Dados (`resultados/tabelas/`):**
+- **Tabelas de Dados (`resultados/tabelas/` e `resultados/tabelas/extras/`):**
   - `exp1_frequencias.csv`: Frequências observadas e probabilidades teóricas.
   - `exp2_medias_acumuladas.csv`: Médias acumuladas de lucro nos marcos $N = 100$, $1.000$ e $10.000$.
   - `exp3_participantes.csv`: Registro detalhado de rodadas jogadas e saldo final de cada participante.
   - `exp4_prob_condicional.csv`: Tabela de contingência e probabilidades de transição entre rodadas consecutivas.
   - `exp5_comparacao_tabelas.csv`: Tabela comparativa pareada entre a regra Base e a regra com acréscimo de $10\%$.
+  - `extras/extra1_intervalos_confianca.csv`: Estimativas pontuais, erro-padrão e IC $95\%$ para 30 execuções independentes.
+  - `extras/extra2_riscos_diferentes.csv`: Comparação de volatilidade (Baixa, Base e Alta) mantendo $\text{RTP} = 84\%$.
+  - `extras/extra3_limites_exposicao.csv`: Comparação entre 3 regras de parada definidas *a priori* e Identidade de Wald.
+  - `extras/extra4_analise_sensibilidade.csv`: Métricas teóricas e observadas nos 7 cenários de sensibilidade.
+  - `extras/extra5_interface_acessivel.csv`: Laudo de contraste WCAG 2.1 (AAA $\ge 7:1$) e roteiro de verificação de uso por teclado.
 
-- **Figuras Gráficas (`resultados/figuras/`):**
+- **Figuras Gráficas (`resultados/figuras/` e `resultados/figuras/extras/`):**
   - `exp1_frequencias.png`: Gráfico de barras comparando frequência observada versus probabilidade teórica.
   - `exp2_convergencia.png`: Trajetórias de convergência da média amostral para a reta $E[X] = -0,16$.
   - `exp3_trajetorias.png`: Curvas de evolução temporal do saldo para os 5 primeiros participantes.
+  - `extras/extra1_intervalos_confianca.png`: *Forest Plot* dos 30 intervalos de confiança de $95\%$ ao redor de $E[X] = -0,16$.
+  - `extras/extra2_riscos_diferentes.png`: Boxplot de saldos finais e comparação de ruína/ganho por volatilidade.
+  - `extras/extra3_limites_exposicao.png`: Comparação de desfechos e exposição média ($\bar{T}$) entre regras de parada.
+  - `extras/extra4_analise_sensibilidade.png`: Curva de sensibilidade do RTP teórico e observado nos 7 cenários.
+  - `extras/extra5_interface_acessivel.png`: Painel acessível com paleta Okabe-Ito, hachuras geométricas e auditoria de contraste WCAG 2.1.
 
 ---
 

@@ -36,7 +36,6 @@ from src.extras import (
     f_executarExtra3LimitesExposicao,
     f_executarExtra4AnaliseSensibilidade,
     f_executarExtra5InterfaceAcessivel,
-    f_iniciarJanelaAcessivelTkinter,
 )
 
 
@@ -93,17 +92,16 @@ def f_menuPontosExtras() -> None:
         print("     [2] Extra 2 — Mesma Média, Riscos Diferentes (3 Tabelas RTP 84%   | até 4 pts)")
         print("     [3] Extra 3 — Limites de Exposição e Parada (Stop-Win / Stop-Loss | até 3 pts)")
         print("     [4] Extra 4 — Análise de Sensibilidade (7 Cenários Paramétricos   | até 3 pts)")
-        print("     [5] Extra 5 — Interface Acessível (Auditoria WCAG 2.1 e Teclado   | até 3 pts)")
+        print("     [5] Extra 5 — Interface Web Acessível (Abre Automaticamente no Navegador | até 3 pts)")
 
-        print("\n  >> RECURSOS INTERATIVOS E EXECUÇÃO EM LOTE:")
-        print("     [6] Abrir Janela Gráfica Acessível (Tkinter — Operação 100% por Teclado)")
-        print("     [7] Executar TODOS os 5 Experimentos Extras em lote (Gera CSVs e PNGs)")
+        print("\n  >> EXECUÇÃO EM LOTE:")
+        print("     [6] Executar TODOS os 5 Experimentos Extras em lote (Gera CSVs, PNGs e HTML)")
 
         print("\n  >> NAVEGAÇÃO:")
         print("     [0] Voltar ao Menu Principal")
         print("-" * largura)
 
-        op = input("  Selecione uma opção [0-7]: ").strip()
+        op = input("  Selecione uma opção [0-6]: ").strip()
 
         if op == "1":
             print("\nExecutando Extra 1: Intervalos de Confiança (30 execuções de 10.000 giros)... Aguarde...")
@@ -153,23 +151,16 @@ def f_menuPontosExtras() -> None:
             input("\nPressione ENTER para continuar...")
 
         elif op == "5":
-            print("\nExecutando Extra 5: Interface Acessível e Verificação de Uso... Aguarde...")
-            res5 = f_executarExtra5InterfaceAcessivel()
+            print("\nGerando e abrindo Extra 5: Interface Web Acessível no navegador padrão...")
+            res5 = f_executarExtra5InterfaceAcessivel(abrirNavegador=True)
             print("\n" + f_gerarTabelaFormatada(res5["cabecalhos_resumo"], res5["tabela_resumo"]))
-            print("\n--- DEMONSTRAÇÃO DO TABULEIRO ACESSÍVEL (FORMAS + LETRAS + MOLDURA DUPLA) ---")
-            print(res5["tabuleiro_exemplo_str"])
-            print("\n--- ROTEIRO DE VERIFICAÇÃO DE USO POR TECLADO ---")
-            for p in res5["roteiro_verificacao"]:
-                print(f"  * {p['passo']}: {p['evidencia_observada']}")
-            print(f"\nCSV salvo em:    {res5['caminho_csv']}")
-            print(f"Figura salva em: {res5['caminho_figura']}")
+            print("\n--- RESUMO (EXTRA 5 - INTERFACE WEB ACESSÍVEL) ---")
+            print(f"Aplicação Web HTML gerada em: {res5['caminho_html']}")
+            print(f"Laudo CSV salvo em:           {res5['caminho_csv']}")
+            print(">> A página foi aberta automaticamente no seu navegador padrão (navegação por Mouse e Teclado)!")
             input("\nPressione ENTER para continuar...")
 
         elif op == "6":
-            print("\nAbrindo Janela Gráfica Acessível (Tkinter)... Use ESPAÇO, T, R e ESC no teclado.")
-            f_iniciarJanelaAcessivelTkinter()
-
-        elif op == "7":
             print("\n======================================================================")
             print("  EXECUTANDO BATERIA COMPLETA DE PONTOS EXTRAS (EXTRAS 1 A 5)  ")
             print("======================================================================")
@@ -189,13 +180,14 @@ def f_menuPontosExtras() -> None:
             res4 = f_executarExtra4AnaliseSensibilidade()
             print("\n" + f_gerarTabelaFormatada(res4["cabecalhos"], res4["linhas_tabela"]))
 
-            print("\n5/5: Executando Extra 5 (Interface Acessível e Verificação de Uso)...")
-            res5 = f_executarExtra5InterfaceAcessivel()
+            print("\n5/5: Executando Extra 5 (Interface Web Acessível — Abrindo no Navegador)...")
+            res5 = f_executarExtra5InterfaceAcessivel(abrirNavegador=True)
             print("\n" + f_gerarTabelaFormatada(res5["cabecalhos_resumo"], res5["tabela_resumo"]))
 
             print("\n>> Sucesso! Todos os 5 experimentos de pontos extras foram exportados para:")
-            print("   - Tabelas CSV: resultados/tabelas/extras/")
-            print("   - Gráficos PNG: resultados/figuras/extras/")
+            print("   - Aplicação Web: resultados/interface_acessivel.html")
+            print("   - Tabelas CSV:   resultados/tabelas/extras/")
+            print("   - Gráficos PNG:  resultados/figuras/extras/")
             print("======================================================================")
             input("\nPressione ENTER para voltar ao menu de pontos extras...")
 

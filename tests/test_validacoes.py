@@ -218,13 +218,16 @@ def test_f_extra4_analise_sensibilidade() -> None:
 
 
 def test_f_extra5_interface_acessivel() -> None:
-    """Verifica a auditoria de contraste WCAG 2.1 AAA, redundância de formas e uso por teclado (Extra 5)."""
-    res = f_executarExtra5InterfaceAcessivel()
+    """Verifica a geração da Interface Web Acessível (HTML/CSS/JS) e auditoria WCAG 2.1 AAA (Extra 5)."""
+    res = f_executarExtra5InterfaceAcessivel(abrirNavegador=False)
     assert res["todos_wcag_aaa"] is True
     assert res["menor_razao_contraste"] >= 7.0
-    assert len(res["roteiro_verificacao"]) == 5
-    assert ">>>" in res["tabuleiro_exemplo_str"]
+    assert res["caminho_html"].exists()
     assert res["caminho_csv"].exists()
-    assert res["caminho_figura"].exists()
+    html_gerado = res["caminho_html"].read_text(encoding="utf-8")
+    assert 'aria-live="polite"' in html_gerado
+    assert "Simulador Interativo 3×3" in html_gerado
+
+
 
 

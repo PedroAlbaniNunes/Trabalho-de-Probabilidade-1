@@ -72,9 +72,9 @@ Além dos cinco experimentos fundamentais, o projeto implementa cinco módulos a
 - **Objetivo:** Investigar a resposta do modelo a variações sistemáticas nos pagamentos e na composição probabilística dos rolos.
 - **Aspectos Analisados:** Simulação de 7 cenários ($N = 10.000$, semente `2026`), abrangendo variações lineares nos prêmios (`-20%`, `Base`, `+10%`, ponto de equilíbrio `+19,05%` com $\text{RTP} = 100\%$ e cenário favorável ao jogador `+25%` com $\text{RTP} = 105\%$) e alterações na geometria dos rolos (`6 símbolos equiprováveis` e `rolo com símbolo A duplicado`).
 
-### Extra 5: Interface Acessível (`extra5_interface_acessivel.py`)
-- **Objetivo:** Oferecer uma interface interativa (em modo console e janela gráfica `tkinter`) projetada sob critérios formais de acessibilidade.
-- **Aspectos Analisados:** Controle integral por teclado (`[Espaço/Enter]`, `[T]`, `[R]`, `[Tab]`, `[Esc/Q]`), cálculo matemático de luminância relativa e razão de contraste W3C/WCAG 2.1 (aprovando todos os 10 pares de cores dos temas Escuro e Claro em nível máximo **WCAG AAA $\ge 7,0:1$**), redundância não-cromática por formas geométricas (`● A`, `▲ B`, `■ C`, `◆ D`, `★ E`), paleta científica daltônica *Okabe-Ito* com hachuras e roteiro automatizado de verificação de uso.
+### Extra 5: Interface Web Acessível (`extra5_interface_acessivel.py`)
+- **Objetivo:** Gerar e abrir automaticamente no navegador padrão (`resultados/interface_acessivel.html`) uma aplicação web interativa autocontida (`HTML5 + CSS3 + JavaScript`) projetada sob critérios formais de acessibilidade.
+- **Aspectos Analisados:** Navegação híbrida fluida por **mouse** (cliques em botões, abas e cartões) e por **teclado** (`[Espaço]`, `[G]`, `[C]`, `[R]`, `[T]`, `[V]`, `[1..3]`, `[Tab]`), simulador visual $3 \times 3$ com redundância não-cromática (`● A`, `▲ B`, `■ C`, `◆ D`, `★ E`), gráfico em tempo real do saldo, painel integrado dos Experimentos 1 a 5 e Extras 1 a 4, suporte a leitores de tela (`aria-live` e síntese de voz opcional) e auditoria matemática W3C/WCAG 2.1 aprovando os 10 pares de cores em nível máximo **WCAG AAA ($\ge 7,0:1$)**.
 
 ---
 
@@ -215,7 +215,7 @@ O menu disponibiliza as seguintes opções:
 - **Opção 1:** Realizar uma rodada demonstrativa isolada com visualização da grade $3 \times 3$ e apuração de prêmio na linha central.
 - **Opções 2 a 6:** Executar individualmente os Experimentos 1, 2, 3, 4 ou 5, exibindo tabelas formatadas e estatísticas no terminal.
 - **Opção 7:** Executar a bateria completa de experimentos em lote, gerando simultaneamente todos os relatórios em `.csv` e gráficos em `.png`.
-- **Opção 8:** Abrir o **Menu de Pontos Extras (Seção 10 do Edital)**, permitindo executar individualmente ou em lote os 5 experimentos extras (*Intervalos de Confiança*, *Mesma Média e Riscos Diferentes*, *Limites de Exposição*, *Análise de Sensibilidade* e *Auditoria de Interface Acessível*), além de iniciar o simulador interativo acessível (console ou janela gráfica `tkinter`).
+- **Opção 8:** Abrir o **Menu de Pontos Extras (Seção 10 do Edital)**, permitindo executar individualmente ou em lote os 5 experimentos extras (*Intervalos de Confiança*, *Mesma Média e Riscos Diferentes*, *Limites de Exposição*, *Análise de Sensibilidade* e *Interface Web Acessível*), que gera e abre automaticamente a aplicação `resultados/interface_acessivel.html` no navegador padrão.
 - **Opção 0:** Encerrar o programa.
 
 ---
@@ -259,7 +259,10 @@ A execução dos experimentos produz automaticamente arquivos nas seguintes past
   - `extras/extra2_riscos_diferentes.csv`: Comparação de volatilidade (Baixa, Base e Alta) mantendo $\text{RTP} = 84\%$.
   - `extras/extra3_limites_exposicao.csv`: Comparação entre 3 regras de parada definidas *a priori* e Identidade de Wald.
   - `extras/extra4_analise_sensibilidade.csv`: Métricas teóricas e observadas nos 7 cenários de sensibilidade.
-  - `extras/extra5_interface_acessivel.csv`: Laudo de contraste WCAG 2.1 (AAA $\ge 7:1$) e roteiro de verificação de uso por teclado.
+  - `extras/extra5_interface_acessivel.csv`: Laudo de contraste WCAG 2.1 (AAA $\ge 7:1$) dos componentes da interface web acessível.
+
+- **Aplicação Web Autocontida (`resultados/`):**
+  - `interface_acessivel.html`: Aplicação web local (`HTML5/CSS3/JS`) com simulador interativo $3 \times 3$, navegação híbrida por mouse e teclado, temas de alto contraste WCAG AAA e painel integrado dos experimentos.
 
 - **Figuras Gráficas (`resultados/figuras/` e `resultados/figuras/extras/`):**
   - `exp1_frequencias.png`: Gráfico de barras comparando frequência observada versus probabilidade teórica.
@@ -269,7 +272,6 @@ A execução dos experimentos produz automaticamente arquivos nas seguintes past
   - `extras/extra2_riscos_diferentes.png`: Boxplot de saldos finais e comparação de ruína/ganho por volatilidade.
   - `extras/extra3_limites_exposicao.png`: Comparação de desfechos e exposição média ($\bar{T}$) entre regras de parada.
   - `extras/extra4_analise_sensibilidade.png`: Curva de sensibilidade do RTP teórico e observado nos 7 cenários.
-  - `extras/extra5_interface_acessivel.png`: Painel acessível com paleta Okabe-Ito, hachuras geométricas e auditoria de contraste WCAG 2.1.
 
 ---
 
